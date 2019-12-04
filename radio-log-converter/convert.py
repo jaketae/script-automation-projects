@@ -1,11 +1,16 @@
+#!/usr/bin/python
+
+import sys
 import pandas as pd
 from tabula import read_pdf
 
-keyword = {"S/C", "W/P", "T/S", "SUBPOENA", "GREENBACK", "SCIF"}
+keyword = {"S/C", "W/P", "T/S", "SUBPOENA", "GREENBACK", "SCIF", "TRAFFIC"}
 clear = ["CLEAR LAST", "I/S"]
 section_1 = {"BOWLING", "ARMS", "POST", "LIBRARY"}
+file_name = sys.argv[1]
 
-df = read_pdf("PAGE 1.pdf", multiple_tables=True, pages='all')
+# df = read_pdf("PAGE3.pdf", multiple_tables=True, pages='all')
+df = read_pdf(file_name, multiple_tables=True, pages='all')
 
 def wrangle(raw_data):
 	date = raw_data[3].iloc[0,1][-8:]
@@ -21,7 +26,7 @@ def wrangle(raw_data):
 	page_1.drop(1, axis=1, inplace=True); page_2.drop(1, axis=1, inplace=True) 
 	page_1.index = [i for i in range(0, 11)]; page_2.index = [i for i in range(11, 25)]
 	frame = pd.concat([page_1, page_2])
-	frame.columns = ["Time", "Unit", "Location"]
+	frame.columns = ["Call Time", "Unit", "Remarks"]
 	frame["Date"] = date[4:6] + "/" + date[6:] + "/" + date[0:4]
 	return frame
 
@@ -31,14 +36,16 @@ def arrange(df):
 		if desc.isdisjoint(keyword):
 			df.iat[row.Index, 2] = pd.NaT
 		else:
-			#txt = ' '.join(desc - keyword)
-			#df.iat[row.Index, 2] = txt
 			temp = str(row[1])
 			df.iat[row.Index, 0] = temp[:2] + ":" + temp[2:]
 	df.dropna(inplace=True)
-	df["Activity"] = df.apply(activity, axis=1)
-	df["Section"] = df.apply(sector, axis=1)
-	# df["Shift"] = df.apply(shift, axis=1)
+	df["Name"] = df.apply(activity, axis=1)
+	df["Location"] = df.apply(sector, axis=1)
+	df["Shift"] = df.apply(shift, axis=1)
+	df["Type"], df["Action"] = "Service", "Checked for security AIO"
+	df["Dispatched"], df["Arrive"] = df["Call Time"], df["Call Time"]
+	df["Clear"], df["Close"], df["Time"] = pd.NaT, pd.NaT, pd.NaT
+	df = df[["Type", "Name", "Date", "Shift", "Call Time", "Unit", "Location", "Dispatched", "Arrive", "Clear", "Close", "Time", "Action", "Remarks"]]
 	return df
 
 def activity(row):
@@ -47,7 +54,7 @@ def activity(row):
 		result = "security check"
 	elif short == "W/P":
 		result = "walking patrol"
-	elif short == "T/S":
+	elif short == "T/S" or "Traffic":
 		result = "traffic stop"
 	elif short == "SUBPOENA":
 		result = "subpoena"
@@ -78,7 +85,7 @@ def sector(row):
 	return loc
 
 def shift(row):
-	dash = row[1][0]
+	dash = int(row[1][0])
 	if dash == 1:
 		time = "Days"
 	elif dash == 2:
@@ -87,6 +94,6 @@ def shift(row):
 		time = "Mids"
 	return time
 
-# arrange(wrangle(df)).to_excel("Test.xlsx")
-
-print(arrange(wrangle(df)))
+arrange(wrangle(df)).to_excel("{}.xlsx".format(file_name), index=False)
+# arrange(wrangle(df)).to_excel("Test.xlsx", index=False)
+# print(arrange(wrangle(df)))
