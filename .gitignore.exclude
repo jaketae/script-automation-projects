@@ -90,6 +90,9 @@ celerybeat-schedule
 .project
 .pydevproject
 
+# Miscellaneous
+.DS_Store
+
 # mkdocs documentation
 /site
 
