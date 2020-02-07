@@ -1,11 +1,13 @@
 #!/bin/bash
 
+project=$1
+
+
 function init(){
-    cd
-    python create.py $1
-    cd /Users/jaketae/documents/github/$1
+    python create.py $project
+    cd /Users/jaketae/documents/github/$project
     git init
-    git remote add origin git@github.com:jaketae/$1.git
+    git remote add origin git@github.com:jaketae/$project.git
     touch README.md
     git add .
     git commit -m "initial commit"

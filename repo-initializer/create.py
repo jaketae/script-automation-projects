@@ -3,7 +3,7 @@ import os
 from github import Github
 
 username = "jaketae"
-password = None
+password = "" 
 path = "/Users/jaketae/documents/github"
 
 
