@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function init(){
-	cd
+    cd
     python create.py $1
     cd /Users/jaketae/documents/github/$1
     git init
@@ -10,5 +10,7 @@ function init(){
     git add .
     git commit -m "initial commit"
     git push -u origin master
-    code .
+    echo "==========Repo intialization complete!=========="
 }
+
+init
