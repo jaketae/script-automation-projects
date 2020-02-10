@@ -9,6 +9,8 @@ function init(){
     git init
     git remote add origin git@github.com:jaketae/$project.git
     touch README.md
+    touch .gitignore
+    echo .DS_Store >> .gitignore
     git add .
     git commit -m "initial commit"
     git push -u origin master
