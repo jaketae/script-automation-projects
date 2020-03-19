@@ -2,7 +2,7 @@ import sys
 import os
 from github import Github
 
-access_token = "your_token"
+access_token = "4fbac4d4696610ef5ca8aa58c0b93fdf775e6c30"
 path = "/Users/jaketae/documents/github"
 
 
