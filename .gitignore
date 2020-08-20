@@ -72,6 +72,9 @@ target/
 #   install all needed dependencies.
 #Pipfile.lock
 
+# ipynb
+.ipynb_checkpoints/
+
 # celery beat schedule file
 celerybeat-schedule
 
