@@ -195,9 +195,10 @@ indent_style = tab
 max_line_length = 79
 EOF
     git add .
-    git commit -m "Initial commit"
+    git commit -m "init"
     git push -u origin master
     echo "==========Repo intialization complete!=========="
+    github # alias
 }
 
 init
